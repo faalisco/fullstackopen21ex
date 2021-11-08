@@ -71,11 +71,18 @@ const App = (props) => {
     ? notes
     : notes.filter(note => note.important === true)
 
+    // const h1Styles = {
+    //   color: 'green',
+    //   fontSize: '40px'
+    // }
 
 
   return (
     <div>
-      <h1>Notes</h1>
+      <h1 style = {{
+      color: 'blue',
+      fontSize: '40px'
+    }}>Notes</h1>
 
       <Notification message={errorMessage} />
 
