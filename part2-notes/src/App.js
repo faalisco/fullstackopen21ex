@@ -5,13 +5,19 @@ import Note from './components/Note'
 import noteService from './services/notes'
 import Notification from './components/NOtification'
 import Footer from './components/Footer'
+import LoginForm from './components/LoginForm'
+import loginServices from './services/login'
 
 
 const App = (props) => {
+  const [loginVisible, setLoginVisible] = useState(false)
   const [notes, setNotes] = useState([])
   const [newNote, setNewNote] = useState('')
   const [showAll, setshowAll] = useState(true)
   const [errorMessage, setErrorMessage] = useState(null)
+  const [username, setUsername] = useState('')
+  const [password, setPassword] = useState('')
+  const [user, setUser] = useState(null)
 
   useEffect(() => {
     noteService
@@ -20,7 +26,17 @@ const App = (props) => {
         setNotes(initialNotes)
       })
   }, [])
-  // console.log('render', notes.length, 'notes')
+
+
+  useEffect(() => {
+    const loggedUserJSON = window.localStorage.getItem('loggedNoteappUser')
+
+    if (loggedUserJSON) {
+      const user = JSON.parse(loggedUserJSON)
+      setUser(user)
+      noteService.setToken(user.token)
+    }
+  }, [])
 
 
   const toggleImportantOf = id => {
@@ -71,20 +87,93 @@ const App = (props) => {
     ? notes
     : notes.filter(note => note.important === true)
 
-    // const h1Styles = {
-    //   color: 'green',
-    //   fontSize: '40px'
-    // }
+
+
+  const handleLogin = async (event) => {
+    event.preventDefault()
+
+    try{
+      const user = await loginServices.login({
+        username, password
+      })
+
+
+      window.localStorage.setItem(
+        'loggedNoteappUser', JSON.stringify(user)
+      )
+
+      noteService.setToken(user.token)
+      setUser(user)
+      setUsername('')
+      setPassword('')
+    }catch (exception) {
+      setErrorMessage('Wrong credentials')
+      setTimeout(() => {
+        setErrorMessage(null)
+      }, 5000)
+    }
+  }
+
+
+  const loginForm = () => {
+    const hideWhenVisible = { display: loginVisible ? 'none' : '' }
+    const showWhenVisible = { display: loginVisible ? '' : 'none' }
+
+
+    return (
+      <div>
+        <div style={hideWhenVisible}>
+          <button onClick={()=> setLoginVisible(true)}>log in</button>
+        </div>
+
+        <div style={showWhenVisible}>
+          <LoginForm
+            username={username}
+            password={password}
+            handleUsernameChange={({target}) => setUsername(target.value)}
+            handlePasswordChange={({target}) => setPassword(target.value)}
+            handleSubmit={handleLogin}
+          />
+          <button onClick={() => setLoginVisible(false)}>cancel</button>
+        </div>
+      </div>
+    )
+  }
+
+
+  const noteForm = () => (
+    <form onSubmit={addNote}>
+      <input
+        value={newNote}
+        onChange={handleNoteChange}
+      />
+      <button type="submit">save</button>
+    </form>
+  )
 
 
   return (
     <div>
-      <h1 style = {{
-      color: 'blue',
-      fontSize: '40px'
-    }}>Notes</h1>
+      <h1>Notes</h1>
 
       <Notification message={errorMessage} />
+
+
+
+
+      {user === null ?
+       loginForm() : 
+       <div>
+        <p> {user.name} logged-in</p>
+         {noteForm()}
+
+       </div>
+       
+      }
+
+
+
+
 
       <div>
         <button onClick={() => setshowAll(!showAll)}>
@@ -101,14 +190,6 @@ const App = (props) => {
           />
         )}
       </ul>
-
-      <form onSubmit={addNote}>
-        <input
-          value={newNote}
-          onChange={handleNoteChange}
-        />
-        <button type="submit">save</button>
-      </form>
 
 
       <Footer />

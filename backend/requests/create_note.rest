@@ -6,10 +6,11 @@ GET http://localhost:3001/api/notes/
 ###
 POST http://localhost:3001/api/notes
 Content-Type: application/json
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InJvb3QiLCJpZCI6IjYxYjVmNmI3ZmFhNjg4ZjA4MWYzYz
 
 {
-    "content": "lol",
-    "important": false
+    "content": "testing note creation with wrong token",
+    "important": true
 }
 
 ###
