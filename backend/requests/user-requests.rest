@@ -6,7 +6,7 @@ Content-Type: application/json
 
 {
     "notes": [],
-    "username": "root",
-    "name": "superuser",
-    "password": "familyman"
+    "username": "mluukkai",
+    "name": "matti luukkainen",
+    "password": "salainen"
 }
