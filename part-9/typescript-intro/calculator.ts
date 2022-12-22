@@ -15,7 +15,7 @@
 // calculator redefine to address to issue of a function return more than one type all none possible values shoukd throw errors
 type Operation = 'multiply' | 'add' | 'divide';
 type Result = number;
-const calculator = (a: number, b: number, op: Operation): Result => {
+export const calculator = (a: number, b: number, op: Operation): Result => {
   switch (op) {
     case 'multiply':
       return a * b;
@@ -33,7 +33,7 @@ try {
 } catch (error: unknown) {
   let errorMessage = 'Something went wrong.';
   if (error instanceof Error) {
-    errorMessage == ' Error: ' + error.message;
+    errorMessage += ' Error: ' + error.message;
   }
   console.log(errorMessage);
 }
