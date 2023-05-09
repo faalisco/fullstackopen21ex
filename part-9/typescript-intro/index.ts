@@ -2,6 +2,7 @@ import express from 'express';
 import { calculator } from './calculator';
 
 const app = express();
+app.use(express.json()); //needed in order to get hold of post body
 
 app.get('/ping', (_req, res) => {
   res.send('pong');
@@ -12,7 +13,7 @@ app.post('/calculate', (req, res) => {
   const { value1, value2, op } = req.body;
 
   if (!value1 || isNaN(Number(value1))) {
-    return res.status(400).send({ error: '...' });
+    res.status(400).send({ error: '...' });
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
